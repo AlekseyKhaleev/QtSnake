@@ -2,7 +2,9 @@ QT += widgets
 
 SOURCES += \
         Game.cpp \
+#        Robot.cpp \
         main.cpp
 
 HEADERS += \
-    Game.h
+    Game.h \
+#    Robot.h
