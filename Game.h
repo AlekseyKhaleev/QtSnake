@@ -10,7 +10,7 @@ public:
     Game();
 
 protected:
-    void timerEvent(QTimerEvent*) override;
+    void timerEvent(QTimerEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
 
@@ -22,10 +22,14 @@ private:
     static const int DELAY = 150;
 
     void doDrawing();
+    void locateApple();
+    void move();
+    void check_field();
+    void check_apple();
+    void gameOver();
 
-    void localApple();
 
-    int timerId;
+    int m_timerId;
     QPoint m_apple;
 
     enum Directions{
