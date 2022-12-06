@@ -4,12 +4,22 @@
 #include <qrandom.h>
 #include <QTime>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QDebug>
+#include <QCoreApplication>
+#include <QStyle>
+#include <QtWidgets>
+#include <QtGui>
+
 
 Game::Game(){
-
+    QRect rect = frameGeometry();
+    rect.moveCenter(QGuiApplication::primaryScreen()->availableGeometry().center());
+    this->setGeometry(rect);
     this->resize(DOT_WIDTH*FIELD_WIDTH, DOT_HEIGHT*FIELD_HEIGHT);
     this->setWindowTitle("Course work: FSM robot");
+
+
     initGame();
 }
 
@@ -26,7 +36,19 @@ void Game::timerEvent(QTimerEvent *event){
 
 void Game::keyPressEvent(QKeyEvent *event){
     int key = event->key();
+    if(key == Qt::Key_Space){
+        QRect rect = frameGeometry();
+        rect.moveCenter(QGuiApplication::primaryScreen()->availableGeometry().center());
+        QMessageBox msgb;
+        msgb.setGeometry(rect);
+        msgb.setText("<p align='center'>Pause</p>");
+        msgb.setStandardButtons(QMessageBox::Ok);
+        msgb.setDefaultButton(QMessageBox::Ok);
+        killTimer(m_timerId);
+        msgb.exec();
+        m_timerId = startTimer(DELAY);
 
+    }
     if(key == Qt::Key_Left && m_dir != Directions::right){m_dir = Directions::left; }
     if(key == Qt::Key_Right && m_dir != Directions::left){m_dir = Directions::right;}
     if(key == Qt::Key_Up && m_dir != Directions::down)   {m_dir = Directions::up;   }
@@ -43,6 +65,10 @@ void Game::doDrawing()
 {
     QPainter qp(this);
     if (m_inGame){
+//        qp.setPen(Qt::black);
+//        for(int i=0; i<16;++i){
+//            qp.drawLine
+//        }
         qp.setBrush(Qt::red);
         qp.drawEllipse(m_apple.x()*DOT_WIDTH, m_apple.y()*DOT_HEIGHT, DOT_WIDTH, DOT_HEIGHT);
         for(int i=0; i<m_dots.size();++i){
@@ -114,12 +140,18 @@ void Game::check_apple()
 
 void Game::gameOver()
 {
+    QRect rect = frameGeometry();
+    rect.moveCenter(QGuiApplication::primaryScreen()->availableGeometry().center());
     QMessageBox msgb;
-    msgb.setText("Game Over");
-    msgb.exec();
-
-    initGame();
-}
+    msgb.setGeometry(rect);
+    msgb.setText("<p align='center'>Game Over</p>");
+    msgb.setInformativeText("<p align='center'>Try again?</p>");
+    msgb.setStandardButtons(QMessageBox::Close | QMessageBox::Retry);
+    msgb.setDefaultButton(QMessageBox::Retry);
+    int ret = msgb.exec();
+    if (ret == QMessageBox::Retry){initGame();}
+    else {QCoreApplication::quit();}
+ }
 
 void Game::initGame(){
     m_inGame=true;

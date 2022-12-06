@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <memory>
-
+#include <QPoint>
 
 
 /*********************** Константы и макроопределения, используемые для работы с классами *****************************/
@@ -34,20 +34,6 @@ using FsmPtr = std::shared_ptr<IFsm>;
 using namespace Fsm_const;
 typedef bool signal[2];
 
-struct point{
-    int x{};
-    int y{};
-    point(int x, int y){
-        x = x;
-        y = y;
-    }
-
-    point() {
-        x=0;
-        y=0;
-    }
-};
-
 /**********************************************************************************************************************/
 
 class IFsm {
@@ -56,10 +42,10 @@ protected:
     IFsm& operator=(const IFsm&) = default; // запрет присваивания
     [[nodiscard]] static FsmPtr CreateInstance(); // функция-фабрика
 
-    virtual void SetState(bool (*state)());
-    virtual void Update();
+    virtual void SetState(bool (*state)())=0;
+    virtual void Update()=0;
 public:
-    virtual point SigHandle(signal sig);
+    virtual QPoint SigHandle(signal sig)=0;
 
 };
 
@@ -67,33 +53,18 @@ public:
 
 class Robot : public IFsm{
 private:
-    point CS{0,0};
-    point DS{0, 1};
+    QPoint CS{0, 0};
+    QPoint DS{0, 1};
     const char *arrow = U_ARR;
 
     bool (*ActiveState)()= nullptr; // указатель на активное состояние автомата
 
-    void SetState(bool (*state)()) override{
-        ActiveState = state;
-    };
-    void Update() override{
-        if (ActiveState != nullptr) {
-            ActiveState();
-        }
-    };
-    const char * GetArrow(){
-        return arrow;
-    } ;
-    static bool wait(signal sig = nullptr){
-        std::cout<<u8' ';
-        //move_cursor(CS);
-        //std::cout<<GetArrow();
-        //move_coursor(title);
-        //std::cout<<"Current position (x,y): << CS;
-        return 1;
-    };
+    void SetState(bool (*state)()) override;;
+    void Update() override;;
+    const char * GetArrow(); ;
+    static bool wait(signal sig = nullptr);;
 
-    static  bool analyze();
+    static bool analyze();
     static bool turn();
     static bool move();
     static bool exit();
@@ -101,12 +72,7 @@ private:
     static bool right();
 
 public:
-    point SigHandle(signal sig) override{
-        if (sig[1]) {
-            SetState(analyze);
-            Update();
-        }
-    };
+    QPoint SigHandle(signal sig) override;;
     Robot();           // открытый конструктор
     ~Robot() override; // открытый деструктор
 };

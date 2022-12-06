@@ -44,3 +44,67 @@ FsmPtr IFsm::CreateInstance() {
 Robot::Robot() = default;
 
 Robot::~Robot() = default;
+
+void Robot::SetState(bool (*state)()){
+    ActiveState = state;
+}
+
+void Robot::Update(){
+    if (ActiveState != nullptr) {
+        ActiveState();
+    }
+}
+
+const char *Robot::GetArrow(){
+    return arrow;
+}
+
+bool Robot::wait(signal sig){
+
+    std::cout<<u8' ';
+    //move_cursor(CS);
+    //std::cout<<GetArrow();
+    //move_coursor(title);
+    //std::cout<<"Current position (x,y): << CS;
+    return 1;
+}
+
+bool Robot::analyze()
+{
+    return 0;
+}
+
+bool Robot::turn()
+{
+    return 0;
+}
+
+bool Robot::move()
+{
+    return 0;
+}
+
+bool Robot::exit()
+{
+    return 0;
+}
+
+bool Robot::left()
+{
+    return 0;
+}
+
+bool Robot::right()
+{
+    return 0;
+}
+
+QPoint Robot::SigHandle(signal sig){
+    if (sig[1]) {
+        SetState(analyze);
+        Update();
+    }
+    return CS;
+}
+
+

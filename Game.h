@@ -4,6 +4,7 @@
 #include <QVector>
 #include <QPoint>
 
+
 class Game : public QWidget
 {
 public:
@@ -15,6 +16,7 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
+
     static const int DOT_WIDTH = 20;
     static const int DOT_HEIGHT = 20;
     static const int FIELD_WIDTH = 20;
@@ -34,9 +36,7 @@ private:
 
     enum Directions{
         left, right, up, down
-    };
-
-    Directions m_dir;
+    } m_dir;
 
     bool m_inGame;
 
